@@ -1,0 +1,77 @@
+<!doctype html>
+<!--
+  Шаблон для приложения "AI Translator & Critic".
+  Примечание для QA: этот файл использует Bootstrap CDN для быстрого стайлинга.
+  Проверяйте, что форма отправляет поля `original_text` и `language` методом POST.
+-->
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Translator & Critic</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      /* Минималистичный современный стиль */
+      body { background: #f7f9fc; }
+      .card { border-radius: 12px; }
+      textarea { min-height: 160px; }
+    </style>
+  </head>
+  <body>
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card shadow-sm mb-4">
+            <div class="card-body">
+              <h3 class="card-title mb-3">AI Translator & Critic</h3>
+              <p class="text-muted">Введите текст, выберите язык и нажмите «Перевести».</p>
+
+              <!-- Форма: метод POST; сервер обрабатывает перевод и оценку -->
+              <form method="post">
+                <!-- Поле для исходного текста -->
+                <div class="mb-3">
+                  <label class="form-label">Исходный текст</label>
+                  <textarea class="form-control" name="original_text" required>{{ original_text }}</textarea>
+                  <!-- QA: проверьте, что textarea корректно передаёт данные при больших объёмах. -->
+                </div>
+
+                <!-- Выбор языка перевода -->
+                <div class="mb-3 d-flex gap-2 align-items-center">
+                  <label class="form-label mb-0">Язык перевода:</label>
+                  <select class="form-select w-auto" name="language">
+                    <option {% if language == 'English' %}selected{% endif %}>English</option>
+                    <option {% if language == 'French' %}selected{% endif %}>French</option>
+                    <option {% if language == 'German' %}selected{% endif %}>German</option>
+                  </select>
+                </div>
+
+                <!-- Кнопки действий: обе отправляют форму -->
+                <div class="d-flex gap-2">
+                  <button type="submit" class="btn btn-primary">Перевести</button>
+                  <button type="submit" class="btn btn-outline-secondary">Оценить при помощи LLM-as-a-Judge</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Результаты: перевод и оценка -->
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Перевод</h5>
+              <pre class="small bg-light p-3 rounded">{{ translation }}</pre>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Оценка качества перевода (вердикт LLM-as-a-Judge)</h5>
+              <pre class="small bg-light p-3 rounded">{{ evaluation }}</pre>
+            </div>
+          </div>
+
+          <p class="text-muted mt-3 small">Примечание: ответы LLM могут содержать ошибки. Используйте вердикт как подсказку.</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
